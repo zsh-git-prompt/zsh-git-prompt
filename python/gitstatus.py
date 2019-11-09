@@ -63,7 +63,7 @@ def git_paths(git_root):
     merge_file = os.path.join(tree_d, 'MERGE_HEAD')
     rebase_dir = os.path.join(tree_d, 'rebase-apply')
 
-    return head_file, stash_file, merge_file, rebase_dir
+    return [head_file, stash_file, merge_file, rebase_dir]
 
 
 def parse_branch(branch, head_file):
@@ -97,7 +97,9 @@ def parse_branch(branch, head_file):
     elif branch.startswith('Initial commit') or branch.startswith('No commits yet'):
         branch = branch.split(' ')[-1]
 
-    return branch, upstream, local
+    return ["GIT_BRANCH " + str(branch),
+            "GIT_UPSTREAM " + str(upstream),
+            "GIT_LOCAL_ONLY " + str(local)]
 
 
 def parse_ahead_behind(branch):
@@ -117,7 +119,8 @@ def parse_ahead_behind(branch):
             elif 'behind' in part:
                 behind = int(part.replace('behind ', ''))
 
-    return ahead, behind
+    return ["GIT_AHEAD " + str(ahead),
+            "GIT_BEHIND " + str(behind)]
 
 
 def parse_stats(lines):
@@ -145,7 +148,10 @@ def parse_stats(lines):
         if line[1] in ['C', 'D', 'M', 'R']:
             changed += 1
 
-    return staged, conflicts, changed, untracked
+    return ["GIT_STAGED " + str(staged),
+            "GIT_CONFLICTS " + str(conflicts),
+            "GIT_CHANGED " + str(changed),
+            "GIT_UNTRACKED " + str(untracked)]
 
 
 def stash_count(stash_file):
@@ -163,7 +169,7 @@ def stash_count(stash_file):
     except IOError:
         stashes = 0
 
-    return stashes
+    return "GIT_STASHED " + str(stashes)
 
 
 def rebase_progress(rebase_dir):
@@ -184,15 +190,13 @@ def rebase_progress(rebase_dir):
     except IOError:
         rebase = '0'
 
-    return rebase
+    return "GIT_REBASE " + str(rebase)
 
-
-def current_git_status(lines):
+def collect_information(lines):
     """
-    Parse git status procelain output and return the formatted text that
-    represents the current status of the respoistory.
+    Parse git status procelain output.
 
-    Returns: The formatted message representing the git repository
+    Returns: A list of strings representing the git repository
 
     Raises:
         IOError: There is no `.git` folder in the current folder hierarchy
@@ -202,13 +206,24 @@ def current_git_status(lines):
     remote = parse_ahead_behind(lines[0])
     stats = parse_stats(lines[1:])
     stashes = stash_count(stash_file)
-    merge = int(os.path.isfile(merge_file))
+    merge = "GIT_MERGING " + str(int(os.path.isfile(merge_file)))
     rebase = rebase_progress(rebase_dir)
 
-    values = [str(x) for x in (branch,) + remote + stats +
-              (stashes, local, upstream, merge, rebase)]
+    props = ["GIT_IS_REPOSITORY 1", branch,] + remote + stats + [stashes, local, upstream, merge, rebase]
+    values = [str(x) for x in props]
+    return values
 
-    return ' '.join(values)
+def current_git_status(lines):
+    """
+    Parse git status procelain output.
+
+    Returns: The formatted message representing the git repository
+
+    Raises:
+        IOError: There is no `.git` folder in the current folder hierarchy
+    """
+    values = collect_information(lines)
+    return '\n'.join(values) + "\n"
 
 
 def main():

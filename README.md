@@ -88,7 +88,7 @@ It should be pretty clear, unless you name your branches like hashes :-)
 
 1.  Go in a git repository and test it!
 
-### Haskell (optional)
+### Haskell (optional, currently not working)
 
 There is now a Haskell implementation as well, which can be four to six times faster than the Python one. The reason is not that Haskell is faster in itself (although it is), but that this implementation calls `git` only once. To install, do the following:
 

@@ -20,36 +20,39 @@ chpwd_update_git_vars() {
     update_current_git_vars
 }
 
+# https://unix.stackexchange.com/a/331490/153926
+dynamic_assign() { 
+    eval "$1"=\"\$2\"
+}
+
 update_current_git_vars() {
     unset __CURRENT_GIT_STATUS
 
     if [ "$GIT_PROMPT_EXECUTABLE" = "python" ]; then
         local py_bin=${ZSH_GIT_PROMPT_PYBIN:-"python"}
-        __GIT_CMD=$(git status --porcelain --branch &> /dev/null 2>&1 | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py")
+        __GIT_CMD() {
+            git status --porcelain --branch &> /dev/null 2>&1 | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py"
+        }
     else
-        __GIT_CMD=$(git status --porcelain --branch &> /dev/null | $__GIT_PROMPT_DIR/src/.bin/gitstatus)
+        __GIT_CMD() {
+            git status --porcelain --branch &> /dev/null | $__GIT_PROMPT_DIR/haskell/.bin/gitstatus
+        }
     fi
-    __CURRENT_GIT_STATUS=("${(@s: :)__GIT_CMD}")
-    unset __GIT_CMD
 
-    GIT_BRANCH=$__CURRENT_GIT_STATUS[1]
-    GIT_AHEAD=$__CURRENT_GIT_STATUS[2]
-    GIT_BEHIND=$__CURRENT_GIT_STATUS[3]
-    GIT_STAGED=$__CURRENT_GIT_STATUS[4]
-    GIT_CONFLICTS=$__CURRENT_GIT_STATUS[5]
-    GIT_CHANGED=$__CURRENT_GIT_STATUS[6]
-    GIT_UNTRACKED=$__CURRENT_GIT_STATUS[7]
-    GIT_STASHED=$__CURRENT_GIT_STATUS[8]
-    GIT_LOCAL_ONLY=$__CURRENT_GIT_STATUS[9]
-    GIT_UPSTREAM=$__CURRENT_GIT_STATUS[10]
-    GIT_MERGING=$__CURRENT_GIT_STATUS[11]
-    GIT_REBASE=$__CURRENT_GIT_STATUS[12]
+    __GIT_CMD | while IFS= read -r line; do
+        if [[ "$line" =~ "GIT_*=*" ]]; then
+            local VAR=${line%% *}
+            local ARG=${line#* }
+            dynamic_assign "$VAR" "$ARG"
+        fi
+    done 
+    unset __GIT_CMD
 }
 
 git_super_status() {
     precmd_update_git_vars
 
-    if [ -n "$__CURRENT_GIT_STATUS" ]; then
+    if [ -n "$GIT_IS_REPOSITORY" ]; then
         local STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
         local clean=1
 
@@ -109,11 +112,17 @@ git_super_status() {
     fi
 }
 
+
 # Always has path to this directory
 # A: finds the absolute path, even if this is symlinked
 # h: equivalent to dirname
 export __GIT_PROMPT_DIR=${0:A:h}
 export GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}
+
+if [[ "$1" = "--debug" ]]; then
+    git_super_status
+    exit
+fi
 
 # Load required modules
 autoload -U add-zsh-hook

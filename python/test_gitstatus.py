@@ -18,6 +18,47 @@ import gitstatus
 
 GIT_STATUS = os.path.join(os.path.dirname(__file__), 'gitstatus.py')
 
+default_values = {
+        "GIT_IS_REPOSITORY": "1",
+        "GIT_BRANCH": "master",
+        "GIT_AHEAD": 0,
+        "GIT_BEHIND": 0,
+        "GIT_STAGED": 0,
+        "GIT_CONFLICTS": 0,
+        "GIT_CHANGED": 0,
+        "GIT_UNTRACKED": 0,
+        "GIT_STASHED": 0,
+        "GIT_LOCAL_ONLY": 0,
+        "GIT_UPSTREAM": gitstatus.SYM_NOUPSTREAM,
+        "GIT_MERGING": 0,
+        "GIT_REBASE": 0,
+    }
+
+def assert_gitstatus(output, expected_dict):
+    """
+    Checks the output of the functions.
+    """
+    if type(output) == str:
+        output = output.split("\n")
+
+    for line in output:
+        if line == "":
+            continue
+
+        idx = line.index(" ")
+        var = line[:idx]
+        arg = line[idx+1:]
+
+        expected_arg = None
+        if var in expected_dict:
+            expected_arg = expected_dict[var]
+        else:
+            expected_arg = default_values[var]
+
+        assert str(expected_arg) == arg
+
+    pass
+
 
 def run_gitstatus():
     """
@@ -841,34 +882,48 @@ _C changed1
 _D changed2
 _M changed3
 _R changed4"""
-    assert gitstatus.parse_stats(status_input.splitlines()) == (5, 7, 4, 3)
+    assert_gitstatus(gitstatus.parse_stats(status_input.splitlines()), {
+        "GIT_STAGED": 5,
+        "GIT_CONFLICTS": 7,
+        "GIT_CHANGED": 4,
+        "GIT_UNTRACKED": 3})
 
 
 def test_parse_ahead_behind_only_ahead():
     """ A unit test for gitstatus. """
-    assert gitstatus.parse_ahead_behind("## master...up/master [ahead 2]") == (2, 0)
+    assert_gitstatus(gitstatus.parse_ahead_behind("## master...up/master [ahead 2]"), {
+        "GIT_AHEAD": 2})
 
 
 def test_parse_ahead_behind_only_behind():
     """ A unit test for gitstatus. """
-    assert gitstatus.parse_ahead_behind("## master...up/master [behind 1]") == (0, 1)
+    assert_gitstatus(gitstatus.parse_ahead_behind("## master...up/master [behind 1]"), {
+        "GIT_BEHIND": 1})
 
 
 def test_parse_ahead_behind_both():
     """ A unit test for gitstatus. """
-    assert gitstatus.parse_ahead_behind("## master...up/master [ahead 2, behind 1]") == (2, 1)
+    assert_gitstatus(gitstatus.parse_ahead_behind("## master...up/master [ahead 2, behind 1]"), {
+        "GIT_AHEAD": 2,
+        "GIT_BEHIND": 1})
 
 
 def test_parse_branch_on_local_branch():
     """ A unit test for gitstatus. """
     branch_line = "## master"
-    assert gitstatus.parse_branch(branch_line, None) == ('master', '..', 1)
+    assert_gitstatus(gitstatus.parse_branch(branch_line, None), {
+        "GIT_BRANCH": 'master',
+        "GIT_UPSTREAM": '..',
+        "GIT_LOCAL_ONLY": 1})
 
 
 def test_parse_branch_has_upstream():
     """ A unit test for gitstatus. """
     branch_line = "## master...up/master [ahead 2, behind 1]"
-    assert gitstatus.parse_branch(branch_line, None) == ('master', 'up/master', 0)
+    assert_gitstatus(gitstatus.parse_branch(branch_line, None), {
+        "GIT_BRANCH": 'master',
+        "GIT_UPSTREAM": 'up/master',
+        "GIT_LOCAL_ONLY": 0})
 
 
 def test_parse_branch_out_on_hash(git_repo_branch_on_hash):
@@ -877,29 +932,32 @@ def test_parse_branch_out_on_hash(git_repo_branch_on_hash):
     actual_hash = actual_hash.decode('utf-8', errors='ignore').strip()
     head_file = os.path.join(os.getcwd(), '.git', 'HEAD')
     branch_line = "## HEAD (no branch)"
-    assert gitstatus.parse_branch(branch_line, head_file) == (':' + actual_hash, '..', 0)
+    assert_gitstatus(gitstatus.parse_branch(branch_line, head_file), {
+        "GIT_BRANCH": ':' + actual_hash,
+        "GIT_UPSTREAM": '..',
+        "GIT_LOCAL_ONLY": 0})
 
 
 def test_stash_count_one_stash(git_repo_parse_stats):
     """ A unit test for gitstatus. """
     stash_file = os.path.join(os.getcwd(), '.git', 'logs', 'refs', 'stash')
-    assert gitstatus.stash_count(stash_file) == 1
+    assert_gitstatus(gitstatus.stash_count(stash_file), {"GIT_STASHED": 1})
 
 
 def test_stash_count_no_stash(git_repo_initial_commit):
     """ A unit test for gitstatus. """
     stash_file = os.path.join(os.getcwd(), 'logs', 'refs', 'stash')
-    assert gitstatus.stash_count(stash_file) == 0
+    assert_gitstatus(gitstatus.stash_count(stash_file), {"GIT_STASHED": 0})
 
 
 def test_rebase_progress_active_rebase(git_repo_in_rebase):
     rebase_dir = os.path.join(os.getcwd(), '.git', 'rebase-apply')
-    assert gitstatus.rebase_progress(rebase_dir) == '1/2'
+    assert_gitstatus(gitstatus.rebase_progress(rebase_dir), {"GIT_REBASE": '1/2'})
 
 
 def test_rebase_progress_no_rebase(git_repo_initial_commit):
     rebase_dir = os.path.join(os.getcwd(), '.git', 'rebase-apply')
-    assert gitstatus.rebase_progress(rebase_dir) == '0'
+    assert_gitstatus(gitstatus.rebase_progress(rebase_dir), {"GIT_REBASE": '0'})
 
 
 # ----------------
@@ -912,45 +970,65 @@ def test_gitstatus_no_repo(empty_working_directory):
 
 def test_gitstatus_initial_commit(git_repo_initial_commit):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'master 0 0 0 0 0 0 0 1 {} 0 0'.format(gitstatus.SYM_NOUPSTREAM)
+    assert_gitstatus(run_gitstatus(),  {"GIT_LOCAL_ONLY": "1"})
 
 
 def test_gitstatus_local_branch(git_repo_branch_on_master):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'master 0 0 0 0 0 0 0 1 {} 0 0'.format(gitstatus.SYM_NOUPSTREAM)
+    assert_gitstatus(run_gitstatus(), {"GIT_LOCAL_ONLY": "1"})
 
 
 def test_gitstatus_on_hash(git_repo_branch_on_hash):
     """ A unit test for gitstatus. """
     actual_hash = sub.check_output(shlex.split('git rev-parse --short HEAD'))
     actual_hash = actual_hash.decode('utf-8', errors='ignore').strip()
-    assert run_gitstatus() == ':{} 0 0 0 0 0 0 0 0 {} 0 0'.format(actual_hash,
-                                                                  gitstatus.SYM_NOUPSTREAM)
+    assert_gitstatus(run_gitstatus(), {"GIT_BRANCH": ":" + actual_hash} )
 
 
 def test_gitstatus_parse_stats_no_conflicts(git_repo_parse_stats):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'master 0 0 3 0 1 2 1 0 up/master 0 0'
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_STAGED": 3,
+        "GIT_CHANGED": 1,
+        "GIT_UNTRACKED": 2,
+        "GIT_STASHED": 1,
+        "GIT_UPSTREAM": "up/master"})
 
 
 def test_gitstatus_parse_stats_only_conflicts(git_repo_parse_stats_only_conflicts):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'master 1 1 0 1 0 0 0 0 up/master 1 0'
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_BRANCH": "master",
+        "GIT_AHEAD": 1,
+        "GIT_BEHIND": 1,
+        "GIT_CONFLICTS": 1,
+        "GIT_UPSTREAM": "up/master",
+        "GIT_MERGING": 1})
 
 
 def test_gitstatus_remote_ahead(git_repo_remote_ahead):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'master 1 0 0 0 0 0 0 0 up/master 0 0'
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_BRANCH": "master",
+        "GIT_AHEAD": 1,
+        "GIT_UPSTREAM": "up/master"})
 
 
 def test_gitstatus_remote_behind(git_repo_remote_behind):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'master 0 1 0 0 0 0 0 0 up/master 0 0'
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_BRANCH": "master",
+        "GIT_BEHIND": 1,
+        "GIT_UPSTREAM": "up/master"})
 
 
 def test_gitstatus_remote_diverged(git_repo_remote_diverged):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'master 1 2 0 0 0 0 0 0 up/master 0 0'
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_BRANCH": "master",
+        "GIT_AHEAD": 1,
+        "GIT_BEHIND": 2,
+        "GIT_UPSTREAM": "up/master"})
 
 
 def test_gitstatus_stdin(git_repo_parse_stats):
@@ -960,21 +1038,39 @@ def test_gitstatus_stdin(git_repo_parse_stats):
         finput.write(std_input)
         finput.seek(0)
         out = sub.check_output(['python', GIT_STATUS], stdin=finput).decode('utf-8')
-    assert out == 'master 0 0 3 0 1 2 1 0 up/master 0 0'
+    assert_gitstatus(out, {
+        "GIT_BRANCH": "master",
+        "GIT_STAGED": 3,
+        "GIT_CHANGED": 1,
+        "GIT_UNTRACKED": 2,
+        "GIT_STASHED": 1,
+        "GIT_UPSTREAM": "up/master"})
 
 
 def test_gitstatus_merging(git_repo_in_merge):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'dev 0 0 0 1 0 0 0 1 .. 1 0'
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_BRANCH": "dev",
+        "GIT_CONFLICTS": 1,
+        "GIT_LOCAL_ONLY": 1,
+        "GIT_UPSTREAM": "..",
+        "GIT_MERGING": 1})
 
 
 def test_gitstatus_rebasing(git_repo_in_rebase):
     """ A unit test for gitstatus. """
     actual_hash = sub.check_output(shlex.split('git rev-parse --short HEAD'))
     actual_hash = actual_hash.decode('utf-8', errors='ignore').strip()
-    assert run_gitstatus() == ':{} 0 0 0 1 0 0 0 0 .. 0 1/2'.format(actual_hash)
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_BRANCH": ":" + actual_hash,
+        "GIT_CONFLICTS": 1,
+        "GIT_UPSTREAM": "..",
+        "GIT_REBASE": "1/2"})
 
 
 def test_gitstatus_upstream_gone(git_repo_upstream_gone):
     """ A unit test for gitstatus. """
-    assert run_gitstatus() == 'dev 0 0 0 0 0 0 0 0 up/dev 0 0'
+    assert_gitstatus(run_gitstatus(), {
+        "GIT_BRANCH": "dev",
+        "GIT_UPSTREAM": "up/dev"})
+
