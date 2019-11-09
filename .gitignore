@@ -2,9 +2,14 @@
 .python-version
 
 # Directories
-src/.bin
 .cache/
+
+# haskell
+haskell/stack.yaml.lock
+haskell/src/.bin
+**/.stack-work
+
+# python
+python/.tox
 **/__pycache__
 .pytest_cache
-**/.stack-work
-.tox

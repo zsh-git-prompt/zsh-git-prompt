@@ -53,9 +53,9 @@ install:
 # around some quirks in Travis's terminal implementation.
 script:
   - if [ "$ARGS" = "python" ]; then
-      tox;
+      cd python; tox;
     else
-      stack $ARGS --no-terminal --install-ghc test --haddock;
+      cd haskell; stack $ARGS --no-terminal --install-ghc test --haddock;
     fi
 
 # Caching so the next build will be fast too.
