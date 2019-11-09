@@ -6,7 +6,7 @@
 
 # haskell
 haskell/stack.yaml.lock
-haskell/src/.bin
+haskell/.bin
 **/.stack-work
 
 # python
