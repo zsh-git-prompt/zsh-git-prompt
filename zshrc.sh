@@ -39,7 +39,7 @@ dynamic_assign() {
 }
 
 update_current_git_vars() {
-    unset __CURRENT_GIT_STATUS
+    unset GIT_IS_REPOSITORY
 
     if [ "$GIT_PROMPT_EXECUTABLE" = "python" ]; then
         local py_bin=${ZSH_GIT_PROMPT_PYBIN:-"python"}
