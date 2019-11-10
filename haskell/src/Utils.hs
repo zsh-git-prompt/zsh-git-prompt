@@ -28,15 +28,19 @@ processGitStatus (branchLine:statusLines) =
 
 showStatusNumbers :: Status Int -> [String]
 showStatusNumbers (MakeStatus s x c t) =
-		do -- List
-			nb <- [s, x, c, t]
-			return (show nb)
+		[
+			"GIT_STAGED " ++ show s,
+			"GIT_CONFLICTS " ++ show x,
+			"GIT_CHANGED " ++ show c,
+			"GIT_UNTRACKED " ++ show t
+		]
 
 showRemoteNumbers :: Maybe Remote -> [String]
 showRemoteNumbers mremote =
-		do -- List
-			ab <- [ahead, behind]
-			return (show ab)
+		[
+			"GIT_AHEAD " ++ show ahead,
+			"GIT_BEHIND " ++ show behind
+		]
 	where
 		(ahead, behind) = fromMaybe (0,0) distance  -- the script needs some value, (0,0) means no display
 		distance = do -- Maybe
@@ -57,7 +61,7 @@ branchOrHashWith _ Nothing _ = MkBranchInfo (MkBranch "") Nothing
 showGitInfo :: Maybe Hash
 			-> GitInfo
 			-> [String]
-showGitInfo mhash (MkGitInfo bi stat) = branchInfoString ++ showStatusNumbers stat
+showGitInfo mhash (MkGitInfo bi stat) = ["GIT_IS_REPOSITORY 1"] ++ branchInfoString ++ showStatusNumbers stat
 	where
 		branchInfoString = showBranchInfo (branchOrHashWith ':' mhash bi)
 

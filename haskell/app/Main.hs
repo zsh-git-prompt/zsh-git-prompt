@@ -29,11 +29,9 @@ gitrevparse = do -- IO
 
 main :: IO ()
 main = do -- IO
-	putStr "test"
 	status <- getContents
 	mhash <- unsafeInterleaveIO gitrevparse -- defer the execution until we know we need the hash
 	let result = do -- Maybe
 		strings <- stringsFromStatus mhash status
-		return (unwords strings)
+		return (unlines strings)
 	putStr (fromMaybe "" result)
-	putStr "test"
