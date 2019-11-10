@@ -72,11 +72,11 @@ git_super_status() {
 
         if [ -n "$GIT_REBASE" ] && [ "$GIT_REBASE" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_REBASE$GIT_REBASE%{${reset_color}%}"
-        elif [ "$GIT_MERGING" -ne "0" ]; then
+        elif [ "$GIT_MERGING" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_MERGING%{${reset_color}%}"
         fi
 
-        if [ "$GIT_LOCAL_ONLY" -ne "0" ]; then
+        if [ "$GIT_LOCAL_ONLY" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_LOCAL%{${reset_color}%}"
         elif [[ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -gt "0" ]] && [ -n "$GIT_UPSTREAM" ] && [ "$GIT_UPSTREAM" != ".." ]; then
             local parts=( "${(s:/:)GIT_UPSTREAM}" )
@@ -86,39 +86,39 @@ git_super_status() {
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT$GIT_UPSTREAM$ZSH_THEME_GIT_PROMPT_UPSTREAM_END%{${reset_color}%}"
         fi
 
-        if [ "$GIT_BEHIND" -ne "0" ] || [ "$GIT_AHEAD" -ne "0" ]; then
+        if [ "$GIT_BEHIND" != "0" ] || [ "$GIT_AHEAD" != "0" ]; then
             STATUS="$STATUS "
         fi
-        if [ "$GIT_BEHIND" -ne "0" ]; then
+        if [ "$GIT_BEHIND" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$GIT_BEHIND%{${reset_color}%}"
         fi
-        if [ "$GIT_AHEAD" -ne "0" ]; then
+        if [ "$GIT_AHEAD" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_AHEAD$GIT_AHEAD%{${reset_color}%}"
         fi
 
         STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_SEPARATOR"
 
-        if [ "$GIT_STAGED" -ne "0" ]; then
+        if [ "$GIT_STAGED" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED$GIT_STAGED%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_CONFLICTS" -ne "0" ]; then
+        if [ "$GIT_CONFLICTS" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CONFLICTS$GIT_CONFLICTS%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_CHANGED" -ne "0" ]; then
+        if [ "$GIT_CHANGED" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CHANGED$GIT_CHANGED%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_UNTRACKED" -ne "0" ]; then
+        if [ "$GIT_UNTRACKED" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED$GIT_UNTRACKED%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_STASHED" -ne "0" ]; then
+        if [ "$GIT_STASHED" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STASHED$GIT_STASHED%{${reset_color}%}"
             clean=0
         fi
-        if [ "$clean" -eq "1" ]; then
+        if [ "$clean" = "1" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN%{${reset_color}%}"
         fi
 
