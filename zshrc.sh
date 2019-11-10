@@ -52,13 +52,25 @@ update_current_git_vars() {
         }
     fi
 
+    local has_stderr=false
+
     while IFS= read -r line; do 
-        if [[ "$line" =~ GIT_*=* ]]; then
+        if [ "$line" = "" ]; then
+            continue
+        elif [[ "$line" =~ GIT_*=* ]]; then
             local VAR=${line%% *}
             local ARG=${line#* }
             dynamic_assign "$VAR" "$ARG"
+        elif [ "$__GIT_PROMPT_DEBUG" = "yes" ]; then
+            has_stderr=true
+            echo "__git_cmd: $line"
         fi
-    done < <(__GIT_CMD)
+    done < <(__GIT_CMD 2>&1)
+ 
+    if $has_stderr; then
+        echo "Unexpected output. Check the lines starting with __git_cmd:"
+    fi
+
     unset __GIT_CMD
 }
 
@@ -127,9 +139,8 @@ git_super_status() {
 }
 
 
-
-
-if [[ "$1" = "--debug" ]]; then
+if [ "$1" = "--debug" ]; then
+    __GIT_PROMPT_DEBUG="yes"
     git_super_status
     exit
 fi
