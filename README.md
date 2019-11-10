@@ -4,17 +4,11 @@
 
 A `zsh` prompt that displays information about the current git repository. In particular the branch name, difference with remote branch, number of files staged, changed, etc.
 
-(an original idea from this [blog post][]).
+## History
 
-## Active Fork
+The original idea came from this [blog post][]. It was extended with new functionality at [olivierverdier/zsh-git-prompt](https://github.com/olivierverdier/zsh-git-prompt).
 
-This is an active fork of olivierverdier/zsh-git-prompt
-
-The original maintainer is inactive, I aim to maintain and extend the original with new features.
-
-I do not write Haskell, so I can only ensure the `zshrc.sh` and python version are working. Please contribute PRs for Haskell parity. See issue #5 .
-
-A summary of all changes can be found at [Fork Status](https://github.com/starcraftman/zsh-git-prompt/wiki)
+Later the development continued at [starcraftman/zsh-git-prompt](https://github.com/starcraftman/zsh-git-prompt). See the its [wiki](https://github.com/starcraftman/zsh-git-prompt/wiki) for a list of added futures.
 
 ## Examples
 
@@ -59,9 +53,9 @@ Symbol | Meaning
 
 Symbol  | Meaning
 ------- | -------
-↑·n     | ahead of remote by `n` commits
-↓·n     | behind remote by `n` commits
-↓·m↑·n  | branches diverged, other by `m` commits, yours by `n` commits
+↑n      | ahead of remote by `n` commits
+↓n      | behind remote by `n` commits
+↓m↑n    | branches diverged, other by `m` commits, yours by `n` commits
 
 
 ### Branch States
@@ -88,7 +82,7 @@ It should be pretty clear, unless you name your branches like hashes :-)
 
 1.  Go in a git repository and test it!
 
-### Haskell (optional, currently not working)
+### Haskell (optional)
 
 There is now a Haskell implementation as well, which can be four to six times faster than the Python one. The reason is not that Haskell is faster in itself (although it is), but that this implementation calls `git` only once. To install, do the following:
 
@@ -127,8 +121,8 @@ These are the defaults:
     ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
     ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
     ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
-    ZSH_THEME_GIT_PROMPT_BEHIND="%{↓·%2G%}"
-    ZSH_THEME_GIT_PROMPT_AHEAD="%{↑·%2G%}"
+    ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%2G%}"
+    ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%2G%}"
     ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑%G%}"
     ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
     ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
