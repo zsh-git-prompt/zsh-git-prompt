@@ -1,7 +1,5 @@
 # To install source this file from your .zshrc file
 
-export GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}  
-
 if [ -n "$ZSH_VERSION" ]; then
     # Always has path to this directory
     # A: finds the absolute path, even if this is symlinked
@@ -41,14 +39,19 @@ dynamic_assign() {
 update_current_git_vars() {
     unset GIT_IS_REPOSITORY
 
+    GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}
     if [ "$GIT_PROMPT_EXECUTABLE" = "python" ]; then
         local py_bin=${ZSH_GIT_PROMPT_PYBIN:-"python"}
         __GIT_CMD() {
             git status --porcelain --branch 2>/dev/null | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py"
         }
-    else
+    elif [ "$GIT_PROMPT_EXECUTABLE" = "haskell" ]; then
         __GIT_CMD() {
             git status --porcelain --branch &> /dev/null | $__GIT_PROMPT_DIR/haskell/.bin/gitstatus
+        }
+    elif [ "$GIT_PROMPT_EXECUTABLE" = "shell" ]; then
+        __GIT_CMD() {
+            zsh $__GIT_PROMPT_DIR/shell/gitstatus.sh
         }
     fi
 
