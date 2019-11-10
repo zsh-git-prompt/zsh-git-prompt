@@ -1,5 +1,18 @@
 # To install source this file from your .zshrc file
 
+export GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}  
+
+if [ -n "$ZSH_VERSION" ]; then
+    # Always has path to this directory
+    # A: finds the absolute path, even if this is symlinked
+    # h: equivalent to dirname
+    export __GIT_PROMPT_DIR=${0:A:h}
+elif [ -n "$BASH_VERSION" ]; then
+    export __GIT_PROMPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+else
+    export __GIT_PROMPT_DIR=$(dirname "$(readlink -f "$0")")
+fi
+
 # see documentation at http://linux.die.net/man/1/zshexpn
 preexec_update_git_vars() {
     case "$2" in
@@ -31,7 +44,7 @@ update_current_git_vars() {
     if [ "$GIT_PROMPT_EXECUTABLE" = "python" ]; then
         local py_bin=${ZSH_GIT_PROMPT_PYBIN:-"python"}
         __GIT_CMD() {
-            git status --porcelain --branch &> /dev/null 2>&1 | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py"
+            git status --porcelain --branch 2>/dev/null | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py"
         }
     else
         __GIT_CMD() {
@@ -39,18 +52,19 @@ update_current_git_vars() {
         }
     fi
 
-    __GIT_CMD | while IFS= read -r line; do
-        if [[ "$line" =~ "GIT_*=*" ]]; then
+    while IFS= read -r line; do 
+        if [[ "$line" =~ GIT_*=* ]]; then
             local VAR=${line%% *}
             local ARG=${line#* }
             dynamic_assign "$VAR" "$ARG"
         fi
-    done 
+    done < <(__GIT_CMD)
     unset __GIT_CMD
 }
 
 git_super_status() {
     precmd_update_git_vars
+
 
     if [ -n "$GIT_IS_REPOSITORY" ]; then
         local STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
@@ -64,7 +78,7 @@ git_super_status() {
 
         if [ "$GIT_LOCAL_ONLY" -ne "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_LOCAL%{${reset_color}%}"
-        elif [ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -gt "0" ] && [ -n "$GIT_UPSTREAM" ] && [ "$GIT_UPSTREAM" != ".." ]; then
+        elif [[ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -gt "0" ]] && [ -n "$GIT_UPSTREAM" ] && [ "$GIT_UPSTREAM" != ".." ]; then
             local parts=( "${(s:/:)GIT_UPSTREAM}" )
             if [ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -eq "2" ] && [ "$parts[2]" = "$GIT_BRANCH" ]; then
                 GIT_UPSTREAM="$parts[1]"
@@ -113,11 +127,7 @@ git_super_status() {
 }
 
 
-# Always has path to this directory
-# A: finds the absolute path, even if this is symlinked
-# h: equivalent to dirname
-export __GIT_PROMPT_DIR=${0:A:h}
-export GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}
+
 
 if [[ "$1" = "--debug" ]]; then
     git_super_status
@@ -159,4 +169,4 @@ ZSH_THEME_GIT_PROMPT_UPSTREAM_END="%{${reset_color}%}}"
 ZSH_THEME_GIT_PROMPT_MERGING="%{$fg_bold[magenta]%}|MERGING%{${reset_color}%}"
 ZSH_THEME_GIT_PROMPT_REBASE="%{$fg_bold[magenta]%}|REBASE%{${reset_color}%} "
 
-# vim: set filetype=zsh:
+# vim: filetype=zsh: tabstop=4 shiftwidth=4 expandtab
