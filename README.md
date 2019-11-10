@@ -10,6 +10,11 @@ The original idea came from this [blog post][]. It was extended with new functio
 
 Later the development continued at [starcraftman/zsh-git-prompt](https://github.com/starcraftman/zsh-git-prompt). See the its [wiki](https://github.com/starcraftman/zsh-git-prompt/wiki) for a list of added futures.
 
+**Changes/new features:**
+* Reorganize repository structure
+* Add an interface between the script that analyzes the repository and the script that formats the prompt.
+  This makes it easier to exchange the two scripts. See [Development](#development) 
+
 ## Examples
 
 The prompt may look like the following:
@@ -133,5 +138,39 @@ These are the defaults:
 ```
 
 **Enjoy!**
+
+## Development
+
+The analyzing script need to produce an output like the following:
+
+```
+GIT_IS_REPOSITORY 1
+GIT_BRANCH master
+GIT_AHEAD 1
+GIT_BEHIND 0
+GIT_STAGED 0
+GIT_CONFLICTS 0
+GIT_CHANGED 1
+GIT_UNTRACKED 0
+```
+
+Here is a table of all attributes:
+
+Attribute                  | Description   
+-------------------------- | ------------- 
+GIT_IS_REPOSITORY          | Needs to be defined so that a prompt is produced.
+GIT_BRANCH                 | The name of the branch or the hash of the HEAD.
+GIT_AHEAD                  | How many commits the HEAD is behind the upstream ...
+GIT_BEHIND                 | ... and ahead of the upstream.
+GIT_STAGED                 | How many files are staged,
+GIT_CHANGED                | changed,
+GIT_CONFLICTS              | in conflict,
+GIT_UNTRACKED              | and untracked.
+GIT_STASHED                | How many stashes.
+GIT_LOCAL_ONLY             |
+GIT_UPSTREAM               | 
+GIT_MERGING                |
+GIT_REBASE                 |
+
 
 [blog post]: http://sebastiancelis.com/2009/nov/16/zsh-prompt-git-users/
