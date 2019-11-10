@@ -74,9 +74,7 @@ update_current_git_vars() {
     unset __GIT_CMD
 }
 
-git_super_status() {
-    precmd_update_git_vars
-
+git_build_status() {
 
     if [ -n "$GIT_IS_REPOSITORY" ]; then
         local STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
@@ -135,8 +133,25 @@ git_super_status() {
         fi
 
         echo "%{${reset_color}%}$STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX%{${reset_color}%}"
+
+        [ "$clean" = "1" ] && return 0 || return 1
     fi
+
+    return -1
 }
+
+repo_status() {
+    stat=$(git_super_status)
+    ret=$?
+    echo "$stat" | sed 's/%G%}//g; s/%2G%}//g; s/%{//g; s/%}//g;' 
+    return $ret
+}
+
+git_super_status() {
+    precmd_update_git_vars
+    git_build_status
+}
+
 
 
 if [ "$1" = "--debug" ]; then
