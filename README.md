@@ -14,6 +14,7 @@ Later the development continued at [starcraftman/zsh-git-prompt](https://github.
 * Reorganize repository structure
 * Add an interface between the script that analyzes the repository and the script that formats the prompt.
   This makes it easier to exchange the two scripts. See [Development](#development) 
+* Added [git-summary](https://github.com/zsh-git-prompt/zsh-git-prompt/tree/master/utils)
 
 ## Examples
 
