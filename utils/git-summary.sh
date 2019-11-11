@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-GIT_SUMMARY_MAX_ENTRIES=5
-
 _Z_CMD=${_Z_CMD:-z}
 if ! type "$_Z_CMD" > /dev/null; then
 	echo "This script depends on https://github.com/rupa/z."
@@ -11,6 +9,31 @@ if ! type "$_Z_CMD" > /dev/null; then
 	echo
 	exit 1
 fi
+
+# unset variables
+unset GIT_SUMMARY_MAX_ENTRIES
+
+# command line arguments
+while :; do
+	case $1 in 
+		-n)
+			shift
+			GIT_SUMMARY_MAX_ENTRIES="$1"
+			;;
+
+		-?*)
+			printf "Unknown option: %s\n" "$1" >&2
+			exit
+			;;
+		*)
+			break
+	esac
+	shift
+done
+
+# default values
+GIT_SUMMARY_MAX_ENTRIES=${GIT_SUMMARY_MAX_ENTRIES:-5}
+
 
 git_summary_candidates() {
 	z | sort -r -g | awk '{print $2}'
