@@ -151,7 +151,6 @@ repo_status() {
 }
 
 git_super_status() {
-    precmd_update_git_vars
     git_build_status
 }
 
