@@ -24,7 +24,7 @@ EOF
     fi
 
     local untracked=0
-    local changes=0
+    local changed=0
     local staged=0
     local conflicts=0
     local hashid=""
