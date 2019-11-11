@@ -40,7 +40,7 @@ git_summary_candidates() {
 		[[ $ret = 0 ]] && continue
 
 		# print status
-		printf "  %s\t%s\n" ${git_dir//\n/} $stat
+		printf "  %s\t%s\n" ${git_dir//$'\n'/} $stat
 
 		# limit entries
 		((count++))
