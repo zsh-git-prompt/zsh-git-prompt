@@ -30,7 +30,7 @@ The prompt may look like the following:
 Here is how it could look like when you are ahead by 4 commits, behind by 5 commits, and have 1 staged files, 1 changed but unstaged file, and some untracked files, on branch `dev`:
 
 
-<img src="https://github.com/olivierverdier/zsh-git-prompt/raw/master/screenshot.png" width=300/>
+<img src="https://github.com/zsh-git-prompt/zsh-git-prompt/raw/master/screenshot.png" width=300/>
 
 
 ## Prompt Structure
@@ -167,10 +167,10 @@ GIT_CHANGED                | changed,
 GIT_CONFLICTS              | in conflict,
 GIT_UNTRACKED              | and untracked.
 GIT_STASHED                | How many stashes.
-GIT_LOCAL_ONLY             |
-GIT_UPSTREAM               | 
-GIT_MERGING                |
-GIT_REBASE                 |
+GIT_LOCAL_ONLY             | The branch has no upstream.
+GIT_UPSTREAM               | The name of the remote repository.
+GIT_MERGING                | Whether we are merging.
+GIT_REBASE                 | Information about rebasing. 
 
 
 [blog post]: http://sebastiancelis.com/2009/nov/16/zsh-prompt-git-users/
