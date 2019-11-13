@@ -239,7 +239,7 @@ def main():
         lines = [line.rstrip() for line in sys.stdin.readlines()]
         err = u'\n'.join(lines)
     else:
-        proc = sub.Popen(['git', 'status', '--branch', '--porcelain'],
+        proc = sub.Popen(['git', '--no-optional-locks', 'status', '--branch', '--porcelain'],
                          stdout=sub.PIPE, stderr=sub.PIPE)
         out, err = proc.communicate()
         err = err.decode('utf-8', errors='ignore').strip()
