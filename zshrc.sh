@@ -88,6 +88,9 @@ git_build_status() {
         elif [ "$GIT_MERGING" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_MERGING%{${reset_color}%}"
         fi
+        if [ -n "$GIT_BISECT" ] && [ "$GIT_BISECT" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BISECT$GIT_BISECT%{${reset_color}%}"
+        fi
 
         if [ "$GIT_LOCAL_ONLY" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_LOCAL%{${reset_color}%}"
@@ -196,5 +199,6 @@ ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT=" {%{$fg[blue]%}"
 ZSH_THEME_GIT_PROMPT_UPSTREAM_END="%{${reset_color}%}}"
 ZSH_THEME_GIT_PROMPT_MERGING="%{$fg_bold[magenta]%}|MERGING%{${reset_color}%}"
 ZSH_THEME_GIT_PROMPT_REBASE="%{$fg_bold[magenta]%}|REBASE%{${reset_color}%} "
+ZSH_THEME_GIT_PROMPT_BISECT="%{$fg_bold[magenta]%}|BISECT%{${reset_color}%} "
 
 # vim: filetype=zsh: tabstop=4 shiftwidth=4 expandtab

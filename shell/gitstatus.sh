@@ -112,6 +112,22 @@ EOF
     else
         echo "GIT_REBASE 0"
     fi
+
+    if [ -e "$git_dir/BISECT_START" ]; then
+        local bisect=$(git bisect visualize --format=format:%d | awk '
+            BEGIN {
+                count=0
+            } 
+            !/\(refs\/bisect\//{
+                count++
+            } 
+            END {
+                print count "; " int(log(count)/log(2)) " steps"
+            }')
+        echo "GIT_BISECT $bisect"
+    else
+        echo "GIT_BISECT 0"
+    fi
 }
 
 

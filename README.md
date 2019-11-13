@@ -66,10 +66,13 @@ Symbol  | Meaning
 
 ### Branch States
 
-- **master|✔**               -- On a branch (master), clean
-- **:3adh57m|✔**             -- Checked out a hash
-- **dev|MERGING|✖1**         -- Doing a merge onto dev, 1 conflict
-- **:h2x78q0|REBASE 1/3|✖2** -- Doing a rebase, on first or 3 commits, 2 conflicts
+Status                                | Meaning
+------                                | -------
+**master|✔**                          | On a branch (master), clean
+**:3adh57m|✔**                        | Checked out a hash
+**dev|MERGING|✖1**                    | Doing a merge onto dev, 1 conflict
+**:h2x78q0|REBASE 1/3|✖2**            | Doing a rebase, on first of 3 commits, 2 conflicts
+**:bc49c7c|BISECT 97; 6 steps|✔**     | Bisecting 97 commits, roughly 6 steps left (only with `GIT_PROMPT_EXECUTABLE=shell`)
 
 When the branch name starts with a colon `:`, it means it’s actually a hash, not a branch.
 It should be pretty clear, unless you name your branches like hashes :-)
