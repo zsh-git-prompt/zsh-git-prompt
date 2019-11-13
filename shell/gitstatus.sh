@@ -31,7 +31,7 @@ EOF
     local branch=""
     local ahead=0
     local behind=0
-    git status --porcelain=v2 --branch | while IFS= read -r line; do
+    git --no-optional-locks status --porcelain=v2 --branch | while IFS= read -r line; do
         if beginswith "$line" "#"; then
             case "$line" in
                 *"branch.oid "*)
@@ -109,6 +109,8 @@ EOF
         local next=$(cat $git_dir/rebase-apply/next 2> /dev/null)
         local last=$(cat $git_dir/rebase-apply/last 2> /dev/null)
         echo "GIT_REBASE $next/$last"
+    else
+        echo "GIT_REBASE 0"
     fi
 }
 

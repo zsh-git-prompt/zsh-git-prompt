@@ -43,11 +43,11 @@ update_current_git_vars() {
     if [ "$GIT_PROMPT_EXECUTABLE" = "python" ]; then
         local py_bin=${ZSH_GIT_PROMPT_PYBIN:-"python"}
         __GIT_CMD() {
-            git status --porcelain --branch 2>/dev/null | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py"
+            git --no-optional-locks status --porcelain --branch 2>/dev/null | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py"
         }
     elif [ "$GIT_PROMPT_EXECUTABLE" = "haskell" ]; then
         __GIT_CMD() {
-            git status --porcelain --branch &> /dev/null | $__GIT_PROMPT_DIR/haskell/.bin/gitstatus
+            git --no-optional-locks status --porcelain --branch &> /dev/null | $__GIT_PROMPT_DIR/haskell/.bin/gitstatus
         }
     elif [ "$GIT_PROMPT_EXECUTABLE" = "shell" ]; then
         __GIT_CMD() {
