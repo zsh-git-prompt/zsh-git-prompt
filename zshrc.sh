@@ -59,7 +59,7 @@ update_current_git_vars() {
     # reset git status variables
     for var in IS_REPOSITORY BRANCH AHEAD BEHIND \
             STAGED CHANGED CONFLICTS UNTRACKED STASHED \
-            LOCAL_ONLY UPSTREAM MERGING REBASE; do
+            LOCAL_ONLY UPSTREAM MERGING REBASE BISECT; do
         unset GIT_$var
     done
 
