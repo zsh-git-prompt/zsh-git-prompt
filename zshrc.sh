@@ -39,24 +39,32 @@ dynamic_assign() {
 update_current_git_vars() {
     unset GIT_IS_REPOSITORY
 
+    # find which command to use
     GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}
     if [ "$GIT_PROMPT_EXECUTABLE" = "python" ]; then
         local py_bin=${ZSH_GIT_PROMPT_PYBIN:-"python"}
-        __GIT_CMD() {
+        __GIT_STATUS_CMD() {
             git --no-optional-locks status --porcelain --branch 2>/dev/null | ZSH_THEME_GIT_PROMPT_HASH_PREFIX=$ZSH_THEME_GIT_PROMPT_HASH_PREFIX $py_bin "$__GIT_PROMPT_DIR/python/gitstatus.py"
         }
     elif [ "$GIT_PROMPT_EXECUTABLE" = "haskell" ]; then
-        __GIT_CMD() {
+        __GIT_STATUS_CMD() {
             git --no-optional-locks status --porcelain --branch &> /dev/null | $__GIT_PROMPT_DIR/haskell/.bin/gitstatus
         }
     elif [ "$GIT_PROMPT_EXECUTABLE" = "shell" ]; then
-        __GIT_CMD() {
+        __GIT_STATUS_CMD() {
             zsh $__GIT_PROMPT_DIR/shell/gitstatus.sh
         }
     fi
 
-    local has_stderr=false
+    # reset git status variables
+    for var in IS_REPOSITORY BRANCH AHEAD BEHIND \
+            STAGED CHANGED CONFLICTS UNTRACKED STASHED \
+            LOCAL_ONLY UPSTREAM MERGING REBASE; do
+        unset GIT_$var
+    done
 
+    # analyze repository
+    local has_stderr=false
     while IFS= read -r line; do 
         if [ "$line" = "" ]; then
             continue
@@ -66,15 +74,15 @@ update_current_git_vars() {
             dynamic_assign "$VAR" "$ARG"
         elif [ "$__GIT_PROMPT_DEBUG" = "yes" ]; then
             has_stderr=true
-            echo "__git_cmd: $line"
+            echo "gitstatus: $line"
         fi
-    done < <(__GIT_CMD 2>&1)
+    done < <(__GIT_STATUS_CMD 2>&1)
  
     if $has_stderr; then
-        echo "Unexpected output. Check the lines starting with __git_cmd:"
+        echo "Unexpected output. Check the lines starting with gitstatus:"
     fi
 
-    unset __GIT_CMD
+    unset __GIT_STATUS_CMD
 }
 
 git_build_status() {
