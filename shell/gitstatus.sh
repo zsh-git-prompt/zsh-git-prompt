@@ -15,14 +15,16 @@ analyze_git_repository() {
     {
         read -r branch
         read -r git_dir
+        read -r common_dir
     } << EOF
-$(git rev-parse --abbrev-ref HEAD --git-dir 2> /dev/null)
+$(git rev-parse --abbrev-ref HEAD --git-dir --git-common-dir 2> /dev/null)
 EOF
 
     if [ "$branch" = "" ]; then
         return
     fi
 
+    local local_only=1
     local untracked=0
     local changed=0
     local staged=0
@@ -32,6 +34,7 @@ EOF
     local ahead=0
     local behind=0
     git --no-optional-locks status --porcelain=v2 --branch | while IFS= read -r line; do
+        # TODO: lines starting with ? (untracked) and ! (ignored)
         if beginswith "$line" "#"; then
             case "$line" in
                 *"branch.oid "*)
@@ -88,15 +91,22 @@ EOF
 
     echo "GIT_STASHED $stashed"
 
-    if [ "$upstream" != "" ]; then
-        echo "GIT_LOCAL_ONLY 0"
-        echo "GIT_AHEAD $ahead"
-        echo "GIT_BEHIND $behind"
+    if [ -n "$upstream" ]; then
+        local_only=0
+    fi
+    if [ -d "$common_dir/svn" ]; then
+        if [ -n "$upstream" ]; then
+            upstream="$upstream "
+        fi
+        upstream="${upstream}svn:$(git log --pretty=format:%b --first-parent | grep "^git-svn-id" | sed 's/@[0-9]* .*//; s/^.*\///;' | head -n 1)"
+        local_only=0
+    fi
+
+    echo "GIT_LOCAL_ONLY $local_only"
+    echo "GIT_AHEAD $ahead"
+    echo "GIT_BEHIND $behind"
+    if [ -n "$local_only" ]; then
         echo "GIT_UPSTREAM $upstream"
-    else
-        echo "GIT_LOCAL_ONLY 1"
-        echo "GIT_AHEAD 0"
-        echo "GIT_BEHIND 0"
     fi
 
     if [ -e "$git_dir/MERGE_HEAD" ]; then
