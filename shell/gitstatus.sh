@@ -94,7 +94,7 @@ EOF
     if [ -n "$upstream" ]; then
         local_only=0
     fi
-    if [ -d "$common_dir/svn" ]; then
+    if [ -e "$common_dir/svn/.metadata" ]; then
         if [ -n "$upstream" ]; then
             upstream="$upstream "
         fi
