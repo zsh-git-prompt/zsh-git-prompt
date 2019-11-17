@@ -1,9 +1,4 @@
 
-# https://stackoverflow.com/a/18558871/1562506
-beginswith() { 
-    case "$1" in "$2"*) true;; *) false;; esac; 
-}
-
 extract_arg() {
     n=$1
     shift
@@ -26,6 +21,7 @@ EOF
 
     local local_only=1
     local untracked=0
+    local ignored=0
     local changed=0
     local staged=0
     local conflicts=0
@@ -35,22 +31,34 @@ EOF
     local behind=0
     git --no-optional-locks status --porcelain=v2 --branch | while IFS= read -r line; do
         # TODO: lines starting with ? (untracked) and ! (ignored)
-        if beginswith "$line" "#"; then
-            case "$line" in
-                *"branch.oid "*)
-                    hashid="${line:13}";;
-                *"branch.head "*)
-                    branch="${line:14}";;
-                *"branch.upstream "*)
-                    upstream="${line:18}";;
-                *"branch.ab "*)
-                    local ab="${line:13}"
-                    ahead="${ab%% *}"
-                    behind="${ab#* -}"
-                    ;;
-            esac
-            continue
-        fi
+        case "$line" in 
+            "#"*)
+                case "$line" in
+                    *"branch.oid "*)
+                        hashid="${line:13}";;
+                    *"branch.head "*)
+                        branch="${line:14}";;
+                    *"branch.upstream "*)
+                        upstream="${line:18}";;
+                    *"branch.ab "*)
+                        local ab="${line:13}"
+                        ahead="${ab%% *}"
+                        behind="${ab#* -}"
+                        ;;
+                esac
+                continue
+                ;;
+
+            "? "*)
+                ((untracked++))
+                continue
+                ;;
+
+            "! "*)
+                ((ignored++))
+                continue
+                ;;
+        esac
 
         code="${line:2:2}"
 
