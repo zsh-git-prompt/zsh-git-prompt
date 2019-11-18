@@ -106,7 +106,9 @@ EOF
         if [ -n "$upstream" ]; then
             upstream="$upstream "
         fi
-        upstream="${upstream}svn:$(git log --pretty=format:%b --first-parent | grep "^git-svn-id" | sed 's/@[0-9]* .*//; s/^.*\///;' | head -n 1)"
+        local svn_stat="$(git log --pretty=format:%b --first-parent | grep -n "^git-svn-id" | sed 's/@[0-9]* .*//; s/:git-svn-id.*\// /;' | head -n 1)"
+        ahead=$(( ${svn_stat%% *}-1 ))
+        upstream="${upstream}svn:${svn_stat#* }"
         local_only=0
     fi
 
