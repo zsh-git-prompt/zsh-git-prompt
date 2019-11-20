@@ -30,7 +30,6 @@ EOF
     local ahead=0
     local behind=0
     git --no-optional-locks status --porcelain=v2 --branch | while IFS= read -r line; do
-        # TODO: lines starting with ? (untracked) and ! (ignored)
         case "$line" in 
             "#"*)
                 case "$line" in
@@ -106,7 +105,14 @@ EOF
         if [ -n "$upstream" ]; then
             upstream="$upstream "
         fi
-        local svn_stat="$(git log --pretty=format:%b --first-parent | grep -n "^git-svn-id" | sed 's/@[0-9]* .*//; s/:git-svn-id.*\// /;' | head -n 1)"
+        local svn_stat="$(git log --pretty=format:%h:%w\(0,2,2\)%b --first-parent | awk '
+            # count lines that start with a hash
+            /^[^ ]/ { count += 1 } 
+
+            # find svn branch and revision
+            match($0, /^[0-9a-f]*:?  git-svn-id: .*\/([^/]*)@([0-9]*) /, m) { 
+                print count " " m[1] "@" m[2] 
+            }' | head)"
         ahead=$(( ${svn_stat%% *}-1 ))
         upstream="${upstream}svn:${svn_stat#* }"
         local_only=0
