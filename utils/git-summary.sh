@@ -48,7 +48,7 @@ git_summary_candidates() {
 	for d in $(git_summary_candidates); do
 		# try to find git base dir
 		cd "$d"
-		git_dir=$(git rev-parse --git-dir 2>/dev/null)
+		git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
 		[ $? != 0 ] && continue;
 
 		# only one line for each git repo
