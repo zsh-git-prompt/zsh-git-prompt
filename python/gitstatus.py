@@ -184,13 +184,14 @@ def rebase_progress(rebase_dir):
         - "1/4": Rebase in progress, commit 1 of 4
     """
     try:
-        with open(os.path.join(rebase_dir, 'next')) as next_file,\
+        with open(os.path.join(rebase_dir, 'next')) as next_file, \
                 open(os.path.join(rebase_dir, 'last')) as last_file:
             rebase = next_file.read().strip() + '/' + last_file.read().strip()
     except IOError:
         rebase = '0'
 
     return "GIT_REBASE " + str(rebase)
+
 
 def collect_information(lines):
     """
@@ -209,9 +210,10 @@ def collect_information(lines):
     merge = "GIT_MERGING " + str(int(os.path.isfile(merge_file)))
     rebase = rebase_progress(rebase_dir)
 
-    props = ["GIT_IS_REPOSITORY 1", branch,] + remote + stats + [stashes, local, upstream, merge, rebase]
+    props = ["GIT_IS_REPOSITORY 1", branch, ] + remote + stats + [stashes, local, upstream, merge, rebase]
     values = [str(x) for x in props]
     return values
+
 
 def current_git_status(lines):
     """

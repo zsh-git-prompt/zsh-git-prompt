@@ -13,26 +13,26 @@ import subprocess as sub
 import tempfile
 
 import pytest
-
 import gitstatus
 
 GIT_STATUS = os.path.join(os.path.dirname(__file__), 'gitstatus.py')
 
 default_values = {
-        "GIT_IS_REPOSITORY": "1",
-        "GIT_BRANCH": "master",
-        "GIT_AHEAD": 0,
-        "GIT_BEHIND": 0,
-        "GIT_STAGED": 0,
-        "GIT_CONFLICTS": 0,
-        "GIT_CHANGED": 0,
-        "GIT_UNTRACKED": 0,
-        "GIT_STASHED": 0,
-        "GIT_LOCAL_ONLY": 0,
-        "GIT_UPSTREAM": gitstatus.SYM_NOUPSTREAM,
-        "GIT_MERGING": 0,
-        "GIT_REBASE": 0,
-    }
+    "GIT_IS_REPOSITORY": "1",
+    "GIT_BRANCH": "master",
+    "GIT_AHEAD": 0,
+    "GIT_BEHIND": 0,
+    "GIT_STAGED": 0,
+    "GIT_CONFLICTS": 0,
+    "GIT_CHANGED": 0,
+    "GIT_UNTRACKED": 0,
+    "GIT_STASHED": 0,
+    "GIT_LOCAL_ONLY": 0,
+    "GIT_UPSTREAM": gitstatus.SYM_NOUPSTREAM,
+    "GIT_MERGING": 0,
+    "GIT_REBASE": 0,
+}
+
 
 def assert_gitstatus(output, expected_dict):
     """
@@ -47,7 +47,7 @@ def assert_gitstatus(output, expected_dict):
 
         idx = line.index(" ")
         var = line[:idx]
-        arg = line[idx+1:]
+        arg = line[idx + 1:]
 
         expected_arg = None
         if var in expected_dict:
@@ -970,7 +970,7 @@ def test_gitstatus_no_repo(empty_working_directory):
 
 def test_gitstatus_initial_commit(git_repo_initial_commit):
     """ A unit test for gitstatus. """
-    assert_gitstatus(run_gitstatus(),  {"GIT_LOCAL_ONLY": "1"})
+    assert_gitstatus(run_gitstatus(), {"GIT_LOCAL_ONLY": "1"})
 
 
 def test_gitstatus_local_branch(git_repo_branch_on_master):
@@ -982,7 +982,7 @@ def test_gitstatus_on_hash(git_repo_branch_on_hash):
     """ A unit test for gitstatus. """
     actual_hash = sub.check_output(shlex.split('git rev-parse --short HEAD'))
     actual_hash = actual_hash.decode('utf-8', errors='ignore').strip()
-    assert_gitstatus(run_gitstatus(), {"GIT_BRANCH": ":" + actual_hash} )
+    assert_gitstatus(run_gitstatus(), {"GIT_BRANCH": ":" + actual_hash})
 
 
 def test_gitstatus_parse_stats_no_conflicts(git_repo_parse_stats):
@@ -1073,4 +1073,3 @@ def test_gitstatus_upstream_gone(git_repo_upstream_gone):
     assert_gitstatus(run_gitstatus(), {
         "GIT_BRANCH": "dev",
         "GIT_UPSTREAM": "up/dev"})
-
