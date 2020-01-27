@@ -94,7 +94,7 @@ git_build_status() {
 
         if [ -n "$GIT_REBASE" ] && [ "$GIT_REBASE" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_REBASE$GIT_REBASE%{${reset_color}%}"
-        elif [ "$GIT_MERGING" != "0" ]; then
+        elif [ -n "$GIT_MERGING" ] && [ "$GIT_MERGING" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_MERGING%{${reset_color}%}"
         fi
         if [ -n "$GIT_BISECT" ] && [ "$GIT_BISECT" != "0" ]; then
@@ -147,7 +147,7 @@ git_build_status() {
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN%{${reset_color}%}"
         fi
 
-        echo "%{${reset_color}%}$STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX%{${reset_color}%}"
+        echo -n "%{${reset_color}%}$STATUS$ZSH_THEME_GIT_PROMPT_SUFFIX%{${reset_color}%}"
 
         [ "$clean" = "1" ] && return 0 || return 1
     fi
@@ -171,6 +171,7 @@ git_super_status() {
 if [ "$1" = "--debug" ]; then
     __GIT_PROMPT_DEBUG="yes"
     git_super_status
+    echo
     exit
 fi
 
