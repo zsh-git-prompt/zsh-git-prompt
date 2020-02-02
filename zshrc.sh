@@ -120,6 +120,14 @@ add_theme_var() {
     eval STATUS="\$STATUS\$ZSH_THEME_GIT_PROMPT_$1"
 }
 
+repo_info_with_check() {
+    if repo_check $1; then
+        add_theme_var $1
+        add_repo_var $1
+        add_color_reset
+    fi
+}
+
 git_build_status() {
 
     if [ -n "$REPO_IS_REPOSITORY" ]; then
@@ -130,19 +138,9 @@ git_build_status() {
         add_repo_var BRANCH
         add_color_reset
 
-        if repo_check REBASE; then
-            add_theme_var REBASE
-            add_repo_var REBASE
-            add_color_reset
-        elif repo_check MERGING; then
-            add_theme_var MERGING
-            add_color_reset
-        fi
-        if repo_check BISECT; then
-            add_theme_var BISECT
-            add_repo_var BISECT
-            add_color_reset
-        fi
+        repo_info_with_check REBASE
+        repo_info_with_check MERGING
+        repo_info_with_check BISECT
 
         if repo_check LOCAL_ONLY; then
             add_theme_var LOCAL
@@ -161,51 +159,23 @@ git_build_status() {
         if repo_check BEHIND || repo_check AHEAD; then
             add_str " "
         fi
-        if repo_check BEHIND; then
-            add_theme_var BEHIND
-            add_repo_var BEHIND
-            add_color_reset
-        fi
-        if repo_check AHEAD; then
-            add_theme_var AHEAD
-            add_repo_var AHEAD
-            add_color_reset
-        fi
+        repo_info_with_check BEHIND
+        repo_info_with_check AHEAD
 
         STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_SEPARATOR"
 
-        if repo_check STAGED; then
-            add_theme_var STAGED
-            add_repo_var STAGED
-            add_color_reset
-        fi
-        if repo_check CONFLICTS; then
-            add_theme_var CONFLICTS
-            add_repo_var CONFLICTS
-            add_color_reset
-        fi
-        if repo_check CHANGED; then
-            add_theme_var CHANGED
-            add_repo_var CHANGED
-            add_color_reset
-        fi
-        if repo_check UNTRACKED; then
-            add_theme_var UNTRACKED
-            add_repo_var UNTRACKED
-            add_color_reset
-        fi
-        if repo_check STASHED; then
-            add_theme_var STASHED
-            add_repo_var STASHED
-            add_color_reset
-        fi
+        repo_info_with_check STAGED
+        repo_info_with_check CONFLICTS
+        repo_info_with_check CHANGED
+        repo_info_with_check UNTRACKED
+        repo_info_with_check STASHED
 
         local clean=0
         if repo_check_not STAGED &&
-            repo_check_not CONFLICTS &&
-            repo_check_not CHANGED &&
-            repo_check_not UNTRACKED &&
-            repo_check_not STASHED; then
+                repo_check_not CONFLICTS &&
+                repo_check_not CHANGED &&
+                repo_check_not UNTRACKED &&
+                repo_check_not STASHED; then
             add_theme_var CLEAN
             add_color_reset
             clean=1
