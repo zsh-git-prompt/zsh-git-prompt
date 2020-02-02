@@ -13,6 +13,8 @@ import sys
 SYM_NOUPSTREAM = '..'
 # This symbol appears before hashes when detached
 SYM_PREHASH = os.environ.get('ZSH_THEME_GIT_PROMPT_HASH_PREFIX', ':')
+# Prefix for script output
+PREFIX = 'REPO_'
 
 
 def find_git_root():
@@ -97,9 +99,9 @@ def parse_branch(branch, head_file):
     elif branch.startswith('Initial commit') or branch.startswith('No commits yet'):
         branch = branch.split(' ')[-1]
 
-    return ["GIT_BRANCH " + str(branch),
-            "GIT_UPSTREAM " + str(upstream),
-            "GIT_LOCAL_ONLY " + str(local)]
+    return [PREFIX + "BRANCH " + str(branch),
+            PREFIX + "UPSTREAM " + str(upstream),
+            PREFIX + "LOCAL_ONLY " + str(local)]
 
 
 def parse_ahead_behind(branch):
@@ -119,8 +121,8 @@ def parse_ahead_behind(branch):
             elif 'behind' in part:
                 behind = int(part.replace('behind ', ''))
 
-    return ["GIT_AHEAD " + str(ahead),
-            "GIT_BEHIND " + str(behind)]
+    return [PREFIX + "AHEAD " + str(ahead),
+            PREFIX + "BEHIND " + str(behind)]
 
 
 def parse_stats(lines):
@@ -148,10 +150,10 @@ def parse_stats(lines):
         if line[1] in ['C', 'D', 'M', 'R']:
             changed += 1
 
-    return ["GIT_STAGED " + str(staged),
-            "GIT_CONFLICTS " + str(conflicts),
-            "GIT_CHANGED " + str(changed),
-            "GIT_UNTRACKED " + str(untracked)]
+    return [PREFIX + "STAGED " + str(staged),
+            PREFIX + "CONFLICTS " + str(conflicts),
+            PREFIX + "CHANGED " + str(changed),
+            PREFIX + "UNTRACKED " + str(untracked)]
 
 
 def stash_count(stash_file):
@@ -169,7 +171,7 @@ def stash_count(stash_file):
     except IOError:
         stashes = 0
 
-    return "GIT_STASHED " + str(stashes)
+    return PREFIX + "STASHED " + str(stashes)
 
 
 def rebase_progress(rebase_dir):
@@ -190,7 +192,7 @@ def rebase_progress(rebase_dir):
     except IOError:
         rebase = '0'
 
-    return "GIT_REBASE " + str(rebase)
+    return PREFIX + "REBASE " + str(rebase)
 
 
 def collect_information(lines):
@@ -207,10 +209,10 @@ def collect_information(lines):
     remote = parse_ahead_behind(lines[0])
     stats = parse_stats(lines[1:])
     stashes = stash_count(stash_file)
-    merge = "GIT_MERGING " + str(int(os.path.isfile(merge_file)))
+    merge = PREFIX + "MERGING " + str(int(os.path.isfile(merge_file)))
     rebase = rebase_progress(rebase_dir)
 
-    props = ["GIT_IS_REPOSITORY 1", branch, ] + remote + stats + [stashes, local, upstream, merge, rebase]
+    props = [PREFIX + "IS_REPOSITORY 1", branch, ] + remote + stats + [stashes, local, upstream, merge, rebase]
     values = [str(x) for x in props]
     return values
 

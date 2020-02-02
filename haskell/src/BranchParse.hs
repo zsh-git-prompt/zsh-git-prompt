@@ -38,7 +38,7 @@ instance Arbitrary Distance where
 newtype Branch = MkBranch String deriving (Eq)
 
 instance Show Branch where
-		show (MkBranch b) = "GIT_BRANCH " ++ b
+		show (MkBranch b) = "REPO_BRANCH " ++ b
 
 isValidBranch :: String -> Bool
 isValidBranch b = not (or (isForbidden b)) where

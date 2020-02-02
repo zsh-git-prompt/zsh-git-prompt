@@ -148,33 +148,33 @@ These are the defaults:
 The analyzing script need to produce an output like the following:
 
 ```
-GIT_IS_REPOSITORY 1
-GIT_BRANCH master
-GIT_AHEAD 1
-GIT_BEHIND 0
-GIT_STAGED 0
-GIT_CONFLICTS 0
-GIT_CHANGED 1
-GIT_UNTRACKED 0
+REPO_IS_REPOSITORY 1
+REPO_BRANCH master
+REPO_AHEAD 1
+REPO_BEHIND 0
+REPO_STAGED 0
+REPO_CONFLICTS 0
+REPO_CHANGED 1
+REPO_UNTRACKED 0
 ```
 
 Here is a table of all attributes:
 
 Attribute                  | Description   
 -------------------------- | ------------- 
-GIT_IS_REPOSITORY          | Needs to be defined so that a prompt is produced.
-GIT_BRANCH                 | The name of the branch or the hash of the HEAD.
-GIT_AHEAD                  | How many commits the HEAD is behind the upstream ...
-GIT_BEHIND                 | ... and ahead of the upstream.
-GIT_STAGED                 | How many files are staged,
-GIT_CHANGED                | changed,
-GIT_CONFLICTS              | in conflict,
-GIT_UNTRACKED              | and untracked.
-GIT_STASHED                | How many stashes.
-GIT_LOCAL_ONLY             | The branch has no upstream.
-GIT_UPSTREAM               | The name of the remote repository.
-GIT_MERGING                | Whether we are merging.
-GIT_REBASE                 | Information about rebasing. 
+REPO_IS_REPOSITORY          | Needs to be defined so that a prompt is produced.
+REPO_BRANCH                 | The name of the branch or the hash of the HEAD.
+REPO_AHEAD                  | How many commits the HEAD is behind the upstream ...
+REPO_BEHIND                 | ... and ahead of the upstream.
+REPO_STAGED                 | How many files are staged,
+REPO_CHANGED                | changed,
+REPO_CONFLICTS              | in conflict,
+REPO_UNTRACKED              | and untracked.
+REPO_STASHED                | How many stashes.
+REPO_LOCAL_ONLY             | The branch has no upstream.
+REPO_UPSTREAM               | The name of the remote repository.
+REPO_MERGING                | Whether we are merging.
+REPO_REBASE                 | Information about rebasing. 
 
 
 [blog post]: http://sebastiancelis.com/2009/nov/16/zsh-prompt-git-users/

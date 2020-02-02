@@ -37,7 +37,7 @@ dynamic_assign() {
 }
 
 update_current_git_vars() {
-    unset GIT_IS_REPOSITORY
+    unset REPO_IS_REPOSITORY
 
     # find which command to use
     GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}
@@ -61,7 +61,7 @@ update_current_git_vars() {
     for var in IS_REPOSITORY BRANCH AHEAD BEHIND \
             STAGED CHANGED CONFLICTS UNTRACKED STASHED \
             LOCAL_ONLY UPSTREAM MERGING REBASE BISECT; do
-        unset GIT_$var
+        unset REPO_$var
     done
 
     # analyze repository
@@ -69,7 +69,7 @@ update_current_git_vars() {
     while IFS= read -r line; do 
         if [ "$line" = "" ]; then
             continue
-        elif [[ "$line" =~ GIT_*=* ]]; then
+        elif [[ "$line" =~ REPO_*=* ]]; then
             local VAR=${line%% *}
             local ARG=${line#* }
             dynamic_assign "$VAR" "$ARG"
@@ -88,59 +88,59 @@ update_current_git_vars() {
 
 git_build_status() {
 
-    if [ -n "$GIT_IS_REPOSITORY" ]; then
-        local STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$GIT_BRANCH%{${reset_color}%}"
+    if [ -n "$REPO_IS_REPOSITORY" ]; then
+        local STATUS="$ZSH_THEME_GIT_PROMPT_PREFIX$ZSH_THEME_GIT_PROMPT_BRANCH$REPO_BRANCH%{${reset_color}%}"
         local clean=1
 
-        if [ -n "$GIT_REBASE" ] && [ "$GIT_REBASE" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_REBASE$GIT_REBASE%{${reset_color}%}"
-        elif [ -n "$GIT_MERGING" ] && [ "$GIT_MERGING" != "0" ]; then
+        if [ -n "$REPO_REBASE" ] && [ "$REPO_REBASE" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_REBASE$REPO_REBASE%{${reset_color}%}"
+        elif [ -n "$REPO_MERGING" ] && [ "$REPO_MERGING" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_MERGING%{${reset_color}%}"
         fi
-        if [ -n "$GIT_BISECT" ] && [ "$GIT_BISECT" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BISECT$GIT_BISECT%{${reset_color}%}"
+        if [ -n "$REPO_BISECT" ] && [ "$REPO_BISECT" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BISECT$REPO_BISECT%{${reset_color}%}"
         fi
 
-        if [ "$GIT_LOCAL_ONLY" != "0" ]; then
+        if [ "$REPO_LOCAL_ONLY" != "0" ]; then
             STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_LOCAL%{${reset_color}%}"
-        elif [[ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -gt "0" ]] && [ -n "$GIT_UPSTREAM" ] && [ "$GIT_UPSTREAM" != ".." ]; then
-            local parts=( "${(s:/:)GIT_UPSTREAM}" )
-            if [ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -eq "2" ] && [ "$parts[2]" = "$GIT_BRANCH" ]; then
-                GIT_UPSTREAM="$parts[1]"
+        elif [[ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -gt "0" ]] && [ -n "$REPO_UPSTREAM" ] && [ "$REPO_UPSTREAM" != ".." ]; then
+            local parts=( "${(s:/:)REPO_UPSTREAM}" )
+            if [ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -eq "2" ] && [ "$parts[2]" = "$REPO_BRANCH" ]; then
+                REPO_UPSTREAM="$parts[1]"
             fi
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT$GIT_UPSTREAM$ZSH_THEME_GIT_PROMPT_UPSTREAM_END%{${reset_color}%}"
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT$REPO_UPSTREAM$ZSH_THEME_GIT_PROMPT_UPSTREAM_END%{${reset_color}%}"
         fi
 
-        if [ "$GIT_BEHIND" != "0" ] || [ "$GIT_AHEAD" != "0" ]; then
+        if [ "$REPO_BEHIND" != "0" ] || [ "$REPO_AHEAD" != "0" ]; then
             STATUS="$STATUS "
         fi
-        if [ "$GIT_BEHIND" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$GIT_BEHIND%{${reset_color}%}"
+        if [ "$REPO_BEHIND" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND$REPO_BEHIND%{${reset_color}%}"
         fi
-        if [ "$GIT_AHEAD" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_AHEAD$GIT_AHEAD%{${reset_color}%}"
+        if [ "$REPO_AHEAD" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_AHEAD$REPO_AHEAD%{${reset_color}%}"
         fi
 
         STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_SEPARATOR"
 
-        if [ "$GIT_STAGED" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED$GIT_STAGED%{${reset_color}%}"
+        if [ "$REPO_STAGED" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED$REPO_STAGED%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_CONFLICTS" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CONFLICTS$GIT_CONFLICTS%{${reset_color}%}"
+        if [ "$REPO_CONFLICTS" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CONFLICTS$REPO_CONFLICTS%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_CHANGED" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CHANGED$GIT_CHANGED%{${reset_color}%}"
+        if [ "$REPO_CHANGED" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CHANGED$REPO_CHANGED%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_UNTRACKED" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED$GIT_UNTRACKED%{${reset_color}%}"
+        if [ "$REPO_UNTRACKED" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED$REPO_UNTRACKED%{${reset_color}%}"
             clean=0
         fi
-        if [ "$GIT_STASHED" != "0" ]; then
-            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STASHED$GIT_STASHED%{${reset_color}%}"
+        if [ "$REPO_STASHED" != "0" ]; then
+            STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STASHED$REPO_STASHED%{${reset_color}%}"
             clean=0
         fi
         if [ "$clean" = "1" ]; then

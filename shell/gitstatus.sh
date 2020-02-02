@@ -19,6 +19,7 @@ EOF
         return
     fi
 
+    local PREFIX="REPO_"
     local local_only=1
     local untracked=0
     local ignored=0
@@ -88,15 +89,15 @@ EOF
 
     local stashed=$(git stash list | wc -l)
 
-    echo "GIT_IS_REPOSITORY 1"
-    echo "GIT_BRANCH $branch"
+    echo "${PREFIX}IS_REPOSITORY 1"
+    echo "${PREFIX}BRANCH $branch"
         
-    echo "GIT_UNTRACKED $untracked"
-    echo "GIT_CHANGED $changed"
-    echo "GIT_CONFLICTS $conflicts"
-    echo "GIT_STAGED $staged"
+    echo "${PREFIX}UNTRACKED $untracked"
+    echo "${PREFIX}CHANGED $changed"
+    echo "${PREFIX}CONFLICTS $conflicts"
+    echo "${PREFIX}STAGED $staged"
 
-    echo "GIT_STASHED $stashed"
+    echo "${PREFIX}STASHED $stashed"
 
     if [ -n "$upstream" ]; then
         local_only=0
@@ -118,25 +119,25 @@ EOF
         local_only=0
     fi
 
-    echo "GIT_LOCAL_ONLY $local_only"
-    echo "GIT_AHEAD $ahead"
-    echo "GIT_BEHIND $behind"
+    echo "${PREFIX}LOCAL_ONLY $local_only"
+    echo "${PREFIX}AHEAD $ahead"
+    echo "${PREFIX}BEHIND $behind"
     if [ -n "$local_only" ]; then
-        echo "GIT_UPSTREAM $upstream"
+        echo "${PREFIX}UPSTREAM $upstream"
     fi
 
     if [ -e "$git_dir/MERGE_HEAD" ]; then
-        echo "GIT_MERGING 1"
+        echo "${PREFIX}MERGING 1"
     else
-        echo "GIT_MERGING 0"
+        echo "${PREFIX}MERGING 0"
     fi
 
     if [ -d "$git_dir/rebase-apply" ]; then
         local next=$(cat $git_dir/rebase-apply/next 2> /dev/null)
         local last=$(cat $git_dir/rebase-apply/last 2> /dev/null)
-        echo "GIT_REBASE $next/$last"
+        echo "${PREFIX}REBASE $next/$last"
     else
-        echo "GIT_REBASE 0"
+        echo "${PREFIX}REBASE 0"
     fi
 
     if [ -e "$git_dir/BISECT_START" ]; then
@@ -150,9 +151,9 @@ EOF
             END {
                 print count "; " int(log(count)/log(2)) " steps"
             }')
-        echo "GIT_BISECT $bisect"
+        echo "${PREFIX}BISECT $bisect"
     else
-        echo "GIT_BISECT 0"
+        echo "${PREFIX}BISECT 0"
     fi
 }
 
