@@ -4,6 +4,7 @@
 
 A `zsh` prompt that displays information about the current git repository. In particular the branch name, difference with remote branch, number of files staged, changed, etc.
 
+
 ## History
 
 The original idea came from this [blog post][]. It was extended with new functionality at [olivierverdier/zsh-git-prompt](https://github.com/olivierverdier/zsh-git-prompt).
@@ -14,6 +15,7 @@ Later the development continued at [starcraftman/zsh-git-prompt](https://github.
 * Reorganize repository structure
 * Add an interface between the script that analyzes the repository and the script that formats the prompt.
   This makes it easier to exchange the two scripts. See [Development](#development) 
+* Added a shell-only implementation. This avoids the startup cost of Python or Haskell.
 * Added [git-summary](https://github.com/zsh-git-prompt/zsh-git-prompt/tree/master/utils)
 
 ## Examples
@@ -143,6 +145,8 @@ These are the defaults:
 
 **Enjoy!**
 
+
+
 ## Development
 
 The analyzing script need to produce an output like the following:
@@ -175,6 +179,15 @@ REPO_LOCAL_ONLY             | The branch has no upstream.
 REPO_UPSTREAM               | The name of the remote repository.
 REPO_MERGING                | Whether we are merging.
 REPO_REBASE                 | Information about rebasing. 
+
+
+
+## Related projects
+
+* `vcs_info` from ZSH, see http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#Version-Control-Information
+* https://github.com/magicmonty/bash-git-prompt
+* https://github.com/sindresorhus/pure
+* https://github.com/arialdomartini/oh-my-git
 
 
 [blog post]: http://sebastiancelis.com/2009/nov/16/zsh-prompt-git-users/
