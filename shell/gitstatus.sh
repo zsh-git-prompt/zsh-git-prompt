@@ -87,7 +87,7 @@ EOF
         branch=":${hashid:0:7}"
     fi
 
-    local stashed=$(git stash list | wc -l)
+    local stashed=$(git stash list | wc -l | sed 's/^ *//')
 
     echo "${PREFIX}IS_REPOSITORY 1"
     echo "${PREFIX}BRANCH $branch"
