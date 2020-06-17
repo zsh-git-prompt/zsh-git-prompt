@@ -147,7 +147,7 @@ git_build_status() {
             add_color_reset
         elif [[ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -gt "0" ]] && [ -n "$REPO_UPSTREAM" ] && [ "$REPO_UPSTREAM" != ".." ]; then
             local parts=( "${(s:/:)REPO_UPSTREAM}" )
-            if [ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -eq "2" ] && [ "$parts[2]" = "$REPO_BRANCH" ]; then
+            if [ "$ZSH_GIT_PROMPT_SHOW_UPSTREAM" -eq "2" ] && [ "${(j:/:)parts[@]:1}" = "$REPO_BRANCH" ]; then
                 REPO_UPSTREAM="$parts[1]"
             fi
             add_theme_var UPSTREAM_FRONT
