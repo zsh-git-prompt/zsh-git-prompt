@@ -96,10 +96,7 @@ repo_check() {
 repo_check_not() {
     local content=""
     local cmd="content=\"\$REPO_$1\""
-    echo "$cmd" >> /tmp/zp.log
     eval $cmd
-    echo "$cmd" >> /tmp/zp.log
-    echo "HERE: $content" >> /tmp/zp.log
     [ -n "$content" ] && [ "$content" = "0" ]
 }
 
