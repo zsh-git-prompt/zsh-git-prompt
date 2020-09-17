@@ -204,6 +204,7 @@ git_super_status() {
 
 if [ "$1" = "--debug" ]; then
     __GIT_PROMPT_DEBUG="yes"
+    update_current_git_vars
     git_super_status
     echo
     exit
