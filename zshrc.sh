@@ -40,7 +40,7 @@ update_current_git_vars() {
     unset REPO_IS_REPOSITORY
 
     # find which command to use
-    GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"python"}
+    GIT_PROMPT_EXECUTABLE=${GIT_PROMPT_EXECUTABLE:-"shell"}
     if [ "$GIT_PROMPT_EXECUTABLE" = "python" ]; then
         local py_bin=${ZSH_GIT_PROMPT_PYBIN:-"python"}
         __GIT_STATUS_CMD() {
