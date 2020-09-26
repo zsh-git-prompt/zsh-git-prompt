@@ -133,6 +133,7 @@ These are the defaults:
     ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
     ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
     ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%2G%}"
+    ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SEPARATOR=""
     ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%2G%}"
     ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑%G%}"
     ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
