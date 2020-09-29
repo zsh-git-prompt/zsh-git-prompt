@@ -1,3 +1,4 @@
+#!/bin/zsh
 # To install source this file from your .zshrc file
 
 if [ -n "$ZSH_VERSION" ]; then
