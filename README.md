@@ -4,6 +4,7 @@
 
 A `zsh` prompt that displays information about the current git repository. In particular the branch name, difference with remote branch, number of files staged, changed, etc.
 
+**Contributing:** if you want to contribute to this project, please let me know (https://github.com/zsh-git-prompt/zsh-git-prompt/issues/15), and I'll add you to the zsh-git-prompt organization.
 
 ## History
 
