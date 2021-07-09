@@ -71,5 +71,5 @@ git_summary_candidates() {
 	done 
 
 # format as table
-) | column -t -s $'\t'
+) | awk -v FS=$'\t' '{printf "%-50s%s\n", $1, $2}'
 
