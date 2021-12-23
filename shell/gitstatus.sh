@@ -26,11 +26,12 @@ EOF
     local changed=0
     local staged=0
     local conflicts=0
+    local stashed=-1
     local hashid=""
     local branch=""
     local ahead=0
     local behind=0
-    git --no-optional-locks status --porcelain=v2 --branch | while IFS= read -r line; do
+    git --no-optional-locks status --porcelain=v2 --branch --show-stash | while IFS= read -r line; do
         case "$line" in 
             "#"*)
                 case "$line" in
@@ -45,6 +46,8 @@ EOF
                         ahead="${ab%% *}"
                         behind="${ab#* -}"
                         ;;
+                    *"stash "*)
+                        stashed="${line:8}";;
                 esac
                 continue
                 ;;
@@ -87,7 +90,7 @@ EOF
         branch=":${hashid:0:7}"
     fi
 
-    local stashed=$(git stash list | wc -l | sed 's/^ *//')
+    (( stashed == -1 )) && stashed="$(git stash list | wc -l | sed 's/^ *//')"
 
     echo "${PREFIX}IS_REPOSITORY 1"
     echo "${PREFIX}BRANCH $branch"
