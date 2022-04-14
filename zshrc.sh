@@ -119,7 +119,8 @@ add_theme_var() {
 }
 
 repo_info_with_check() {
-    if repo_check $1; then
+    local show_var="ZSH_GIT_PROMPT_SHOW_$1"
+    if [ "${(P)show_var}" -ne "0" ] && repo_check $1; then
         add_theme_var $1
         add_repo_var $1
         add_color_reset
@@ -154,7 +155,7 @@ git_build_status() {
             add_color_reset
         fi
 
-        if repo_check BEHIND || repo_check AHEAD; then
+        if (repo_check BEHIND && [ "$ZSH_GIT_PROMPT_SHOW_BEHIND" -ne "0" ]) || (repo_check AHEAD && [ "$ZSH_GIT_PROMPT_SHOW_AHEAD" -ne "0" ]); then
             add_str " "
         fi
 
@@ -173,11 +174,11 @@ git_build_status() {
         repo_info_with_check STASHED
 
         local clean=0
-        if repo_check_not STAGED &&
-                repo_check_not CONFLICTS &&
-                repo_check_not CHANGED &&
-                repo_check_not UNTRACKED &&
-                repo_check_not STASHED; then
+        if ([ "$ZSH_GIT_PROMPT_SHOW_STAGED" -eq "0" ] || repo_check_not STAGED) &&
+               ([ "$ZSH_GIT_PROMPT_SHOW_CONFLICTS" -eq "0" ] || repo_check_not CONFLICTS) &&
+               ([ "$ZSH_GIT_PROMPT_SHOW_CHANGED" -eq "0" ] || repo_check_not CHANGED) &&
+               ([ "$ZSH_GIT_PROMPT_SHOW_UNTRACKED" -eq "0" ] || repo_check_not UNTRACKED) &&
+               ([ "$ZSH_GIT_PROMPT_SHOW_STASHED" -eq "0" ] || repo_check_not STASHED); then
             add_theme_var CLEAN
             add_color_reset
             clean=1
@@ -251,5 +252,18 @@ ZSH_THEME_GIT_PROMPT_UPSTREAM_END="%{${reset_color}%}}"
 ZSH_THEME_GIT_PROMPT_MERGING="%{$fg_bold[magenta]%}|MERGING%{${reset_color}%}"
 ZSH_THEME_GIT_PROMPT_REBASE="%{$fg_bold[magenta]%}|REBASE%{${reset_color}%} "
 ZSH_THEME_GIT_PROMPT_BISECT="%{$fg_bold[magenta]%}|BISECT%{${reset_color}%} "
+
+# Settings defaults
+ZSH_GIT_PROMPT_SHOW_UPSTREAM=0
+ZSH_GIT_PROMPT_SHOW_BEHIND=1
+ZSH_GIT_PROMPT_SHOW_AHEAD=1
+ZSH_GIT_PROMPT_SHOW_REBASE=1
+ZSH_GIT_PROMPT_SHOW_MERGING=1
+ZSH_GIT_PROMPT_SHOW_BISECT=1
+ZSH_GIT_PROMPT_SHOW_STAGED=1
+ZSH_GIT_PROMPT_SHOW_CONFLICTS=1
+ZSH_GIT_PROMPT_SHOW_CHANGED=1
+ZSH_GIT_PROMPT_SHOW_UNTRACKED=1
+ZSH_GIT_PROMPT_SHOW_STASHED=1
 
 # vim: filetype=zsh: tabstop=4 shiftwidth=4 expandtab

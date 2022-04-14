@@ -112,6 +112,20 @@ There is now a Haskell implementation as well, which can be four to six times fa
 
 - Define the variable `ZSH_GIT_PROMPT_SHOW_UPSTREAM=2` to show the remote as above but omit the remote branch when its name is equal to the local branch.
 
+- To disable any status component(s), set the following control variables to `0`. All default to `1` (enabled) unless otherwise noted.
+  - `ZSH_GIT_PROMPT_SHOW_UPSTREAM`
+    - Defaults to `0` (off)
+  - `ZSH_GIT_PROMPT_SHOW_BEHIND`
+  - `ZSH_GIT_PROMPT_SHOW_AHEAD`
+  - `ZSH_GIT_PROMPT_SHOW_REBASE`
+  - `ZSH_GIT_PROMPT_SHOW_MERGING`
+  - `ZSH_GIT_PROMPT_SHOW_BISECT`
+  - `ZSH_GIT_PROMPT_SHOW_STAGED`
+  - `ZSH_GIT_PROMPT_SHOW_CONFLICTS`
+  - `ZSH_GIT_PROMPT_SHOW_CHANGED`
+  - `ZSH_GIT_PROMPT_SHOW_UNTRACKED`
+  - `ZSH_GIT_PROMPT_SHOW_STASHED`
+
 Demo:
 
 ![upstream example](https://user-images.githubusercontent.com/470400/40869339-52ae782c-65e7-11e8-89a9-2e053b3f8198.png)
