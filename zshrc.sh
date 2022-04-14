@@ -88,16 +88,14 @@ update_current_git_vars() {
 }
 
 repo_check() {
-    local content=""
-    local cmd="content=\"\$REPO_$1\""
-    eval $cmd
+    local repo_var="REPO_$1"
+    local content="${(P)repo_var}"
     [ -n "$content" ] && [ "$content" != "0" ]
 }
 
 repo_check_not() {
-    local content=""
-    local cmd="content=\"\$REPO_$1\""
-    eval $cmd
+    local repo_var="REPO_$1"
+    local content="${(P)repo_var}"
     [ -n "$content" ] && [ "$content" = "0" ]
 }
 
@@ -111,11 +109,13 @@ add_color_reset() {
 }
 
 add_repo_var() {
-    eval STATUS="\$STATUS\$REPO_$1"
+    local repo_var="REPO_$1"
+    STATUS="${STATUS}${(P)repo_var}"
 }
 
 add_theme_var() {
-    eval STATUS="\$STATUS\$ZSH_THEME_GIT_PROMPT_$1"
+    local theme_var="ZSH_THEME_GIT_PROMPT_$1"
+    STATUS="${STATUS}${(P)theme_var}"
 }
 
 repo_info_with_check() {
