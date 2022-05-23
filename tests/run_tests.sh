@@ -10,16 +10,17 @@ else
     exit 1
 fi
 
-source "${__RUN_TEST_DIR}/setup_tests.sh"
-
 ZSHRCSH_PATH="${__RUN_TEST_DIR}/../zshrc.sh"
+TEST_CASE_DIR="${__RUN_TEST_DIR}/test_cases"
+
+source "${__RUN_TEST_DIR}/setup_tests.sh"
 
 run_super_status() {
     (cd "${TEST_REPO_DIR}" && zsh -f "$ZSHRCSH_PATH" --debug)
 }
 
 # https://stackoverflow.com/a/15612499
-function assertEquals()
+function assert_equals()
 {
     msg=$1; shift
     expected=$1; shift
@@ -30,21 +31,35 @@ function assertEquals()
     fi
 }
 
-FAILURES=0
+function run_test()
+{
+    prepare_test_env && (
+        cd "${TEST_REPO_DIR}"
+        source "${TEST_CASE_DIR}/$1"
+    )
+    result="$?"
+    cleanup_test_env
 
-prepare_test_env && (
-    assertEquals "Clean" "%{${reset_color}%}[%{$fg_bold[magenta]%}main%{${reset_color}%} L%{${reset_color}%}|%{$fg_bold[green]%}%{✔%G%}%{${reset_color}%}]%{${reset_color}%}" "$(run_super_status)"
-); ((FAILURES+=$?)); cleanup_test_env
+    return "$result"
+}
 
-prepare_test_env && (
-    touch "${TEST_REPO_DIR}/untracked_file_1"
-    touch "${TEST_REPO_DIR}/untracked_file_2"
+function run_all_tests()
+{
+    TOTAL=0
+    FAILURES=0
 
-    assertEquals "Two untracked files" "%{${reset_color}%}[%{$fg_bold[magenta]%}main%{${reset_color}%} L%{${reset_color}%}|%{$fg[cyan]%}%{…%G%}2%{${reset_color}%}]%{${reset_color}%}" "$(run_super_status)"
-); ((FAILURES+=$?)); cleanup_test_env
+    for test_full_path in ${TEST_CASE_DIR}/*; do
+        test_case="$(basename "$test_full_path")"
+        echo "Testing: $test_case"
+        ((TOTAL+=1))
+        run_test $test_case
+        ((FAILURES+=$?))
+    done
 
-if [[ "$FAILURES" -eq "0" ]]; then
-    echo "PASS"
-fi
+    PASSED=$((TOTAL-FAILURES))
+    echo "$PASSED/$TOTAL PASSED"
+}
+
+run_all_tests
 
 exit $FAILURES

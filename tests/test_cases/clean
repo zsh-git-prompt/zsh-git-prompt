@@ -1,0 +1,1 @@
+assert_equals "Clean" "%{${reset_color}%}[%{$fg_bold[magenta]%}main%{${reset_color}%} L%{${reset_color}%}|%{$fg_bold[green]%}%{✔%G%}%{${reset_color}%}]%{${reset_color}%}" "$(run_super_status)"
