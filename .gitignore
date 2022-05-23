@@ -13,3 +13,7 @@ haskell/.bin
 python/.tox
 **/__pycache__
 .pytest_cache
+
+
+# Test repo
+tests/test_repo
