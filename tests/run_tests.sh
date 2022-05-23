@@ -50,11 +50,18 @@ function run_all_tests()
 
     for test_full_path in ${TEST_CASE_DIR}/*; do
         test_case="$(basename "$test_full_path")"
-        echo "Testing: $test_case"
         ((TOTAL+=1))
         run_test $test_case
-        ((FAILURES+=$?))
+
+        if [[ "$?" -ne "0" ]]; then
+            echo -n "x"
+            ((FAILURES+=1))
+        else
+            echo -n "."
+        fi
     done
+
+    echo
 
     PASSED=$((TOTAL-FAILURES))
     echo "$PASSED/$TOTAL PASSED"
