@@ -197,6 +197,9 @@ REPO_MERGING                | Whether we are merging.
 REPO_REBASE                 | Information about rebasing. 
 
 
+## Tests
+See [`tests/README.md`](./tests/README.md)
+
 
 ## Related projects
 

@@ -3,6 +3,15 @@
 Testing is done by creating a local test git repository, modifying the state of it, and testing the raw output of the status line against the themed expectations.
 
 
+# Running tests
+
+`make test`
+
+OR
+
+`./tests/run_tests.sh`
+
+
 # Adding a new test case
 Create a new file in [`tests/test_cases/`](./test_cases) with your script. The repository is recreated between test cases so feel free to modify it's state. Do not alter files outside of the repository if at all possible however!
 
