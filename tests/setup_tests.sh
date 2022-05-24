@@ -14,7 +14,7 @@ TEST_REPO_DIR="${__RUN_TEST_DIR}/test_repo"
 MARKER_FILE_NAME="zsh-git-prompt-marker"
 
 git_commit() {
-    GIT_CONFIG_GLOBAL="/dev/null" git commit --no-gpg-sign -q $@
+    GIT_CONFIG_GLOBAL="${__RUN_TEST_DIR}/.gitconfig" git commit --no-gpg-sign -q $@
 }
 
 prepare_test_env() {
