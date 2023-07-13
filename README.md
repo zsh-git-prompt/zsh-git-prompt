@@ -147,16 +147,20 @@ These are the defaults:
     ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
     ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
     ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
-    ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%2G%}"
+    ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%1G%}"
     ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SEPARATOR=""
-    ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%2G%}"
+    ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SECTION_SEPARATOR=" "
+    ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%1G%}"
     ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑%G%}"
     ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
     ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
     ZSH_THEME_GIT_PROMPT_LOCAL=" L"
     # The remote branch will be shown between these two
-    ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT=" {%{$fg_bold[blue]%}"
+    ZSH_THEME_GIT_PROMPT_UPSTREAM_FRONT=" {%{$fg[blue]%}"
     ZSH_THEME_GIT_PROMPT_UPSTREAM_END="%{${reset_color}%}}"
+    ZSH_THEME_GIT_PROMPT_MERGING="%{$fg_bold[magenta]%}|MERGING%{${reset_color}%}"
+    ZSH_THEME_GIT_PROMPT_REBASE="%{$fg_bold[magenta]%}|REBASE%{${reset_color}%} "
+    ZSH_THEME_GIT_PROMPT_BISECT="%{$fg_bold[magenta]%}|BISECT%{${reset_color}%} "
 ```
 
 **Enjoy!**
