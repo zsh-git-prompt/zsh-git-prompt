@@ -156,7 +156,7 @@ git_build_status() {
         fi
 
         if (repo_check BEHIND && [ "$ZSH_GIT_PROMPT_SHOW_BEHIND" -ne "0" ]) || (repo_check AHEAD && [ "$ZSH_GIT_PROMPT_SHOW_AHEAD" -ne "0" ]); then
-            add_str " "
+            add_str $ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SECTION_SEPARATOR
         fi
 
         repo_info_with_check BEHIND
@@ -241,6 +241,7 @@ ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
 ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
 ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%1G%}"
 ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SEPARATOR=""
+ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SECTION_SEPARATOR=" "
 ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%1G%}"
 ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
