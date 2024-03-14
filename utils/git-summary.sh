@@ -66,6 +66,10 @@ git_summary_candidates() {
 	local count=0
 	declare -A aseen
 	for d in $(git_summary_candidates); do
+		if [ ! -e "$d" ]; then
+			continue
+		fi
+
 		# try to find git base dir
 		cd "$d"
 		git_dir=$(git rev-parse --show-toplevel 2>/dev/null)
