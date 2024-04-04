@@ -1,0 +1,5 @@
+touch "added_file_1" && git add "added_file_1"
+touch "added_file_2" && git add "added_file_2"
+touch "added_file_3" && git add "added_file_3"
+
+assert_equals "Three added files" "%{${reset_color}%}[%{$fg_bold[magenta]%}main%{${reset_color}%} L%{${reset_color}%}|%{$fg[red]%}%{●%G%}3%{${reset_color}%}]%{${reset_color}%}" "$(run_super_status)"

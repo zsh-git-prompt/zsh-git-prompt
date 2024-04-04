@@ -1,0 +1,4 @@
+touch "untracked_file_1"
+touch "untracked_file_2"
+
+assert_equals "Two untracked files" "%{${reset_color}%}[%{$fg_bold[magenta]%}main%{${reset_color}%} L%{${reset_color}%}|%{$fg[cyan]%}%{…%G%}2%{${reset_color}%}]%{${reset_color}%}" "$(run_super_status)"

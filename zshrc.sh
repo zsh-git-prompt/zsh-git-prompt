@@ -206,16 +206,6 @@ git_super_status() {
     git_build_status
 }
 
-
-
-if [ "$1" = "--debug" ]; then
-    __GIT_PROMPT_DEBUG="yes"
-    update_current_git_vars
-    git_super_status
-    echo
-    exit
-fi
-
 # Load required modules
 autoload -U add-zsh-hook
 autoload -U colors
@@ -266,5 +256,17 @@ ZSH_GIT_PROMPT_SHOW_CONFLICTS=1
 ZSH_GIT_PROMPT_SHOW_CHANGED=1
 ZSH_GIT_PROMPT_SHOW_UNTRACKED=1
 ZSH_GIT_PROMPT_SHOW_STASHED=1
+
+if [ "$1" = "--debug" ]; then
+    __GIT_PROMPT_DEBUG="yes"
+    update_current_git_vars
+    git_super_status
+    echo
+    exit
+elif [ "$1" = "--test" ]; then
+    update_current_git_vars
+    repo_status
+    exit
+fi
 
 # vim: filetype=zsh: tabstop=4 shiftwidth=4 expandtab
