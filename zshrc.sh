@@ -165,7 +165,13 @@ git_build_status() {
         fi
         repo_info_with_check AHEAD
 
-        add_str "$ZSH_THEME_GIT_PROMPT_SEPARATOR"
+        if ([ "$ZSH_GIT_PROMPT_SHOW_STAGED" -eq "1" ] && repo_check STAGED) ||
+	       ([ "$ZSH_GIT_PROMPT_SHOW_CONFLICTS" -eq "1" ] && repo_check CONFLICTS) ||
+	       ([ "$ZSH_GIT_PROMPT_SHOW_CHANGED" -eq "1" ] && repo_check CHANGED) ||
+	       ([ "$ZSH_GIT_PROMPT_SHOW_UNTRACKED" -eq "1" ] && repo_check UNTRACKED) ||
+	       ([ "$ZSH_GIT_PROMPT_SHOW_STASHED" -eq "1" ] && repo_check STASHED); then
+	    add_str "$ZSH_THEME_GIT_PROMPT_SEPARATOR"
+	fi
 
         repo_info_with_check STAGED
         repo_info_with_check CONFLICTS
