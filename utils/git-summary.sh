@@ -60,6 +60,10 @@ git_summary_candidates() {
 }
 
 (
+	# temporarily change chpwd_functions
+        # As the ()-block runs in a subshell, it does not affect the parent
+	chpwd_functions=(chpwd_update_git_vars)
+
 	local header="  === repository ===\t=== status ==="
 	echo $header
 
