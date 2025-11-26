@@ -231,6 +231,11 @@ add-zsh-hook precmd precmd_update_git_vars
 
 # Default values for the appearance of the prompt.
 # The theme is identical to magicmonty/bash-git-prompt
+
+# Note: %G inside a %{...%} sequence ("glitch") indicates that the width of the output is a single character width
+# See Prompt Expansion in the Z Shell Manual,
+# https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
+# or /usr/share/doc/zsh-common/zsh.texi.gz
 ZSH_THEME_GIT_PROMPT_PREFIX="["
 ZSH_THEME_GIT_PROMPT_SUFFIX="]"
 ZSH_THEME_GIT_PROMPT_HASH_PREFIX=":"
@@ -239,10 +244,10 @@ ZSH_THEME_GIT_PROMPT_BRANCH="%{$fg_bold[magenta]%}"
 ZSH_THEME_GIT_PROMPT_STAGED="%{$fg[red]%}%{●%G%}"
 ZSH_THEME_GIT_PROMPT_CONFLICTS="%{$fg[red]%}%{✖%G%}"
 ZSH_THEME_GIT_PROMPT_CHANGED="%{$fg[blue]%}%{✚%G%}"
-ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%1G%}"
+ZSH_THEME_GIT_PROMPT_BEHIND="%{↓%G%}"
 ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SEPARATOR=""
 ZSH_THEME_GIT_PROMPT_BEHIND_AHEAD_SECTION_SEPARATOR=" "
-ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%1G%}"
+ZSH_THEME_GIT_PROMPT_AHEAD="%{↑%G%}"
 ZSH_THEME_GIT_PROMPT_STASHED="%{$fg_bold[blue]%}%{⚑%G%}"
 ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg[cyan]%}%{…%G%}"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg_bold[green]%}%{✔%G%}"
